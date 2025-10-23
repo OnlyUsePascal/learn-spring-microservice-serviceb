@@ -5,6 +5,9 @@ FROM eclipse-temurin:21-jdk-alpine AS builder
 
 WORKDIR /app
 
+# Cross-service dependency
+
+
 # Copy Maven wrapper & pom.xml first (for efficient caching)
 COPY mvnw .
 COPY .mvn .mvn
@@ -34,7 +37,7 @@ WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
 
 # Expose the default Spring Boot port (you can override in compose)
-EXPOSE 8082
+EXPOSE 8080
 
 # Run the application
 ENTRYPOINT ["java","-jar","/app/app.jar"]
