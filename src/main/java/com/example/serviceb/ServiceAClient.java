@@ -1,15 +1,13 @@
 package com.example.serviceb;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import com.example.servicea.client.GreetingDto;
 
 @FeignClient(value = "servicea")
 public interface ServiceAClient {
-  @GetMapping("/greeting")
-  String getGreeting();
-
-  @GetMapping("/user/{id}")
-  User getUser(@PathVariable int id);
-
+  @PostMapping("/")
+  String sendGreeting(@RequestBody GreetingDto dto);
 }
