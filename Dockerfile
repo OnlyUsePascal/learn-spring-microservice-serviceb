@@ -5,23 +5,26 @@ FROM eclipse-temurin:21-jdk-alpine AS builder
 
 WORKDIR /app
 
-# Maven runner + pom
+# Maven runner
 COPY .mvn .mvn
+
 COPY mvnw .
-COPY pom.xml .
 
 # settings.xml to download cross-service dependency
-COPY settings.xml /
+COPY pom.xml .
+
+COPY settings.xml .
 
 RUN --mount=type=secret,id=github-username,env=GITHUB_USERNAME,required=true \
   --mount=type=secret,id=github-token,env=GITHUB_TOKEN,required=true \
   --mount=type=cache,target=/root/.m2 \
-  cp /settings.xml /root/.m2
+  cp ./settings.xml /root/.m2 && \
+  ./mvnw dependency:go-offline
 
 # Build the Spring Boot application
 COPY src ./src
 
-RUN --mount=type=cache,target=/root/.m2 \ 
+RUN --mount=type=cache,target=/root/.m2 \
   ./mvnw clean package -DskipTests
 
 # ============

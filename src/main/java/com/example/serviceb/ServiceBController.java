@@ -5,11 +5,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.servicea.client.GreetingDto;
+import com.example.servicea.client.ServiceaClient;
 
 @RestController
 public class ServiceBController {
   @Autowired
-  ServiceAClient serviceAClient;
+  ServiceaClient serviceAClient;
 
   @GetMapping("/greeting")
   public String getGreeting() {
