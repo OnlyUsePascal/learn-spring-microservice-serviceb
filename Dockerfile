@@ -5,22 +5,24 @@ FROM eclipse-temurin:21-jdk-alpine AS builder
 
 WORKDIR /app
 
-# Cross-service dependency
-
-
-# Copy Maven wrapper & pom.xml first (for efficient caching)
-COPY mvnw .
+# Maven runner + pom
 COPY .mvn .mvn
+COPY mvnw .
 COPY pom.xml .
 
-# Download dependencies — leverage Docker layer caching
-RUN ./mvnw dependency:go-offline
+# settings.xml to download cross-service dependency
+COPY settings.xml /
 
-# Copy the full source code
-COPY src ./src
+RUN --mount=type=secret,id=github-username,env=GITHUB_USERNAME,required=true \
+  --mount=type=secret,id=github-token,env=GITHUB_TOKEN,required=true \
+  --mount=type=cache,target=/root/.m2 \
+  cp /settings.xml /root/.m2
 
 # Build the Spring Boot application
-RUN ./mvnw clean package -DskipTests
+COPY src ./src
+
+RUN --mount=type=cache,target=/root/.m2 \ 
+  ./mvnw clean package -DskipTests
 
 # ============
 # 🚀 STAGE 2 - RUN THE APP
