@@ -19,7 +19,7 @@ RUN --mount=type=secret,id=github-username,env=GITHUB_USERNAME,required=true \
   --mount=type=secret,id=github-token,env=GITHUB_TOKEN,required=true \
   --mount=type=cache,target=/root/.m2 \
   cp ./settings.xml /root/.m2 && \
-  ./mvnw dependency:go-offline
+  ./mvnw dependency:go-offline -U
 
 # Build the Spring Boot application
 COPY src ./src
